@@ -40,28 +40,28 @@ For more information, please refer to <http://unlicense.org/>
 
 
 #define BITS_PER_BYTE 8
-#define BYTE_ALIGN 4 /*align to 4 byte boundaries*/
+#define BYTE_ALIGN 4 // align to 4 byte boundaries
 
 
-struct bmp_file {
+typedef struct mbmp_image_t {
 	FILE *fp;
 	uint32_t size, data_start, compression, data_size, palette;
 	uint16_t planes, bits_per_pix;
 	int32_t width, height;
 	uint8_t cartesian;
 	uint64_t print_dimentions;
-};
+} mbmp_image_t;
 
-struct bmp_rgb_pixel {
+typedef struct mbmp_pixel_t {
 	uint8_t red;
 	uint8_t green;
 	uint8_t blue;
 	uint8_t alpha;
-};
+} mbmp_pixel_t;
 
 
 
-int bmp_open_file(char *filename, struct bmp_file *file){
+int bmp_open_file(char *filename, mbmp_image_t *file){
 	int status = 1, i;
 	uint32_t junk;
 	file->fp = fopen(filename, "rb+");
@@ -135,8 +135,8 @@ int bmp_open_file(char *filename, struct bmp_file *file){
 	return(status);
 }
 
-int bmp_make_file(char *filename, uint32_t width, uint32_t height, uint32_t color, struct bmp_file *file){
-	memset(file, 0, sizeof(struct bmp_file));
+int bmp_make_file(char *filename, uint32_t width, uint32_t height, uint32_t color, mbmp_image_t *file){
+	memset(file, 0, sizeof(mbmp_image_t));
 	file->fp = fopen(filename, "wb+");
 	if(file->fp == NULL){
 		fprintf(stderr, "mbmp.h: Error: Could not open a new file.\n");
@@ -198,7 +198,7 @@ int bmp_make_file(char *filename, uint32_t width, uint32_t height, uint32_t colo
 
 
 
-int bmp_close_file(struct bmp_file *file){
+int bmp_close_file(mbmp_image_t *file){
 	if(file->fp != NULL){
 		fclose(file->fp);
 	}
@@ -206,7 +206,7 @@ int bmp_close_file(struct bmp_file *file){
 }
 
 
-int bmp_get_pixel(int x, int y, uint32_t *pix, struct bmp_file *file){
+int bmp_get_pixel(int x, int y, uint32_t *pix, mbmp_image_t *file){
 	if(x >= file->width || y >= file->height || x < 0 || y < 0){
 		fprintf(stderr, "mbmp.h: Error: bmp_set_pixel x, y is out of bounds. (%d, %d) is not in image of size %dx%d.\n", x, y, file->width, file->height);
 		return(0);
@@ -234,7 +234,7 @@ int bmp_get_pixel(int x, int y, uint32_t *pix, struct bmp_file *file){
 }
 
 
-int bmp_set_pixel(int x, int y, uint32_t *pix, struct bmp_file *file){
+int bmp_set_pixel(int x, int y, uint32_t *pix, mbmp_image_t *file){
 	if(x >= file->width || y >= file->height || x < 0 || y < 0){
 		fprintf(stderr, "mbmp.h: Error: bmp_get_pixel x, y is out of bounds. (%d, %d) is not in image of size %dx%d.\n", x, y, file->width, file->height);
 		return(0);
@@ -261,7 +261,7 @@ int bmp_set_pixel(int x, int y, uint32_t *pix, struct bmp_file *file){
 	return(1);
 }
 
-void bmp_hex_to_rgb(uint32_t *hex, struct bmp_rgb_pixel *rgb){
+void bmp_hex_to_rgb(uint32_t *hex, mbmp_pixel_t *rgb){
 	rgb->alpha = (*hex & 0xFF000000) >> 24;
 	rgb->red   = (*hex & 0x00FF0000) >> 16;
 	rgb->green = (*hex & 0x0000FF00) >> 8;
@@ -269,7 +269,7 @@ void bmp_hex_to_rgb(uint32_t *hex, struct bmp_rgb_pixel *rgb){
 	return;
 }
 
-void bmp_rgb_to_hex(struct bmp_rgb_pixel *rgb, uint32_t *hex){
+void bmp_rgb_to_hex(mbmp_pixel_t *rgb, uint32_t *hex){
 	*hex = 0;
 	*hex |= (uint32_t)rgb->alpha << 24;
 	*hex |= (uint32_t)rgb->red << 16;
