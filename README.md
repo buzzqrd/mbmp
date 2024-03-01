@@ -26,6 +26,8 @@ int main(void){
 	bmp_get_pixel(50, 50, &pix, &img);
 	printf("Pixel color: 0x%08X\n", pix);
 
+	bmp_close_file(&img); 
+
 	return(0);
 }
 ```
