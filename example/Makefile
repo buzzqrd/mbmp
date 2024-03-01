@@ -1,7 +1,7 @@
 
 
 all:
-	gcc simple.c -o simple
+	gcc simple.c ../mbmp.c -o simple
 
 clean:
 	rm simple
