@@ -60,6 +60,14 @@ typedef struct mbmp_pixel_t {
 } mbmp_pixel_t;
 
 
+int bmp_open_file(char *filename, mbmp_image_t *file);
+int bmp_make_file(char *filename, uint32_t width, uint32_t height, uint32_t color, mbmp_image_t *file);
+int bmp_close_file(mbmp_image_t *file);
+int bmp_get_pixel(int x, int y, uint32_t *pix, mbmp_image_t *file);
+int bmp_set_pixel(int x, int y, uint32_t *pix, mbmp_image_t *file);
+void bmp_hex_to_rgb(uint32_t *hex, mbmp_pixel_t *rgb);
+void bmp_rgb_to_hex(mbmp_pixel_t *rgb, uint32_t *hex);
+
 
 int bmp_open_file(char *filename, mbmp_image_t *file){
 	int status = 1, i;
